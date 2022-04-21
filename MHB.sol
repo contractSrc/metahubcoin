@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
-contract Metahub_Coin is ERC20Burnable, Ownable {
+contract MetahubCoin is ERC20Burnable, Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -58,7 +58,7 @@ contract Metahub_Coin is ERC20Burnable, Ownable {
         string memory symbol_, 
         uint256 totalSupply_, 
         address payable feeWallet_, 
-        address lqWallet_, 
+        address lqWallet_,
         address routerAddr_
     ) ERC20(name_, symbol_)
     {
@@ -71,12 +71,9 @@ contract Metahub_Coin is ERC20Burnable, Ownable {
         feeWallet = feeWallet_;
         lqWallet = lqWallet_;
 
-        setFeeWhiteList(address(this), true, 1);
-        setFeeWhiteList(address(this), true, 2);
-        setFeeWhiteList(feeWallet, true, 1);
-        setFeeWhiteList(feeWallet, true, 2);
-        setFeeWhiteList(lqWallet, true, 1);
-        setFeeWhiteList(lqWallet, true, 2);
+        setFeeWhiteList(address(this), true, 12);
+        setFeeWhiteList(feeWallet, true, 12);
+        setFeeWhiteList(lqWallet, true, 12);
 
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(routerAddr_);
          // Create a uniswap pair for this new token
@@ -149,11 +146,11 @@ contract Metahub_Coin is ERC20Burnable, Ownable {
         return true;
     }
 
-    function transferToken(address token, address to, uint256 value) external onlyOwner returns (bool) {
-        IERC20 tokenCon = IERC20(token);
-        tokenCon.safeTransfer(to, value);
-        return true;
-    }
+    // function transferToken(address token, address to, uint256 value) external onlyOwner returns (bool) {
+    //     IERC20 tokenCon = IERC20(token);
+    //     tokenCon.safeTransfer(to, value);
+    //     return true;
+    // }
 
     function setLockContract(address con) external onlyOwner returns (bool) {
         require(lockContract == address(0), "Cannot set.");
