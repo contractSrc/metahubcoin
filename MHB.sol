@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
+import 'hardhat/console.sol';
 
 contract MetahubCoin is ERC20Burnable, Ownable {
     using SafeMath for uint256;
@@ -85,10 +86,18 @@ contract MetahubCoin is ERC20Burnable, Ownable {
         swapPairs[_uniswapV2Pair] = true;
         swapPairsList.push(_uniswapV2Pair);
 
+        // lockMsg memory lockData;
+        // lockData.exists = true;
+        // lockData.startTime = 1660060800;
+        // lockData.endTime = 1660060800+8640000;
+        // lockData.cycle = 86400;
+        // lockData.times = 100;
+        // lockRecord[address(0)] = lockData;
+
         lockMsg memory lockData;
         lockData.exists = true;
-        lockData.startTime = 1660060800;
-        lockData.endTime = 1660060800+8640000;
+        lockData.startTime = 1650422419;
+        lockData.endTime = 1650422419+8640000;
         lockData.cycle = 86400;
         lockData.times = 100;
         lockRecord[address(0)] = lockData;
@@ -350,8 +359,8 @@ contract MetahubCoin is ERC20Burnable, Ownable {
         }
 
         if (block.timestamp < startLockTime) {
-            speedLockAmount[sender] = balanceOf(sender).sub(lockAmount);
-            speedLockAmount[recipient] = balanceOf(recipient).sub(lockAmount);
+            speedLockAmount[sender] = balanceOf(sender).sub(lockAmount).mul(9).div(10);
+            speedLockAmount[recipient] = balanceOf(recipient).sub(lockAmount).mul(9).div(10);
         } else {
             lockAmount = lockAmount.add(getSpeedLockAmount(sender));
         }
