@@ -85,18 +85,10 @@ contract MetahubCoin is ERC20, Ownable {
         swapPairs[_uniswapV2Pair] = true;
         swapPairsList.push(_uniswapV2Pair);
 
-        // lockMsg memory lockData;
-        // lockData.exists = true;
-        // lockData.startTime = 1660060800;
-        // lockData.endTime = 1660060800+8640000;
-        // lockData.cycle = 86400;
-        // lockData.times = 100;
-        // lockRecord[address(0)] = lockData;
-
         lockMsg memory lockData;
         lockData.exists = true;
-        lockData.startTime = 1650422419;
-        lockData.endTime = 1650422419+8640000;
+        lockData.startTime = 1660060800;
+        lockData.endTime = 1660060800+8640000;
         lockData.cycle = 86400;
         lockData.times = 100;
         lockRecord[address(0)] = lockData;
