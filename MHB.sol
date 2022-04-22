@@ -5,12 +5,12 @@ import "./ILock.sol";
 import "./IUniswapV2Factory.sol";
 import "./IUniswapV2Router.sol";
 
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
-contract MetahubCoin is ERC20Burnable, Ownable {
+contract MetahubCoin is ERC20, Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -30,7 +30,7 @@ contract MetahubCoin is ERC20Burnable, Ownable {
     address public  uniswapV2Pair;
     bool public keepBalance;
 
-    address immutable deadWallet = 0x000000000000000000000000000000000000dEaD;
+    address constant deadWallet = 0x000000000000000000000000000000000000dEaD;
 
     address payable public feeWallet;
     address public lqWallet;
@@ -162,6 +162,7 @@ contract MetahubCoin is ERC20Burnable, Ownable {
 
     function setLockContract(address con) external onlyOwner returns (bool) {
         require(lockContract == address(0), "Cannot set.");
+        require(con != address(0), "Cannot set.");
         lockContract = con;
         return true;
     }
@@ -227,7 +228,7 @@ contract MetahubCoin is ERC20Burnable, Ownable {
     }
 
     function setSwapPair(address addr) external onlyOwner returns (bool) {
-        require(addr != address(0));
+        require(addr != address(0), "Cannot set.");
         require(!swapPairs[addr], "Cannot set.");
         swapPairs[addr] = true;
         swapPairsList.push(addr);
@@ -351,15 +352,17 @@ contract MetahubCoin is ERC20Burnable, Ownable {
         super._transfer(sender, recipient, amount);
 
         uint256 lockAmount = 0;
+        uint256 recipientLockAmount = 0;
         if (lockContract != address(0)) {
             ILock lock = ILock(lockContract);
             lockAmount = lock.getLockAmount(address(this), sender);
+            recipientLockAmount = lock.getLockAmount(address(this), recipient);
             require(balanceOf(sender) >= lockAmount, "Transfer amount exceeds available balance.");
         }
 
         if (block.timestamp < startLockTime) {
             speedLockAmount[sender] = balanceOf(sender).sub(lockAmount).mul(9).div(10);
-            speedLockAmount[recipient] = balanceOf(recipient).sub(lockAmount).mul(9).div(10);
+            speedLockAmount[recipient] = balanceOf(recipient).sub(recipientLockAmount).mul(9).div(10);
         } else {
             lockAmount = lockAmount.add(getSpeedLockAmount(sender));
         }
